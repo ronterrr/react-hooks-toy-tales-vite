@@ -29,14 +29,37 @@ function App() {
     setShowForm((showForm) => !showForm);
   }
 
+  async function donateToy(toyID) {
+    try {
+      const response = await fetch(`http://localhost:3001/toys/${toyID}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ERROR: ${response.status}`);
+      }
+
+      setToys((currentToys) => {
+        return currentToys.filter((toy) => {
+          return toy.id !== toyID;
+        });
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   return (
     <>
       <Header />
-      {showForm ? <ToyForm toys={toys} setToys={setToys}/> : null}
+      {showForm ? <ToyForm toys={toys} setToys={setToys} /> : null}
       <div className="buttonContainer">
         <button onClick={handleClick}>Add a Toy</button>
       </div>
-      <ToyContainer toys={toys} />
+      <ToyContainer toys={toys} onDonate={donateToy} />
     </>
   );
 }
