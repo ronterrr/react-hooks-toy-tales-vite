@@ -52,6 +52,29 @@ function App() {
     }
   }
 
+  async function likeToy(toyID, newLike){
+    const response = await fetch(`http://localhost:3001/toys/${toyID}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        likes: newLike
+      })
+    });
+
+    const data = await response.json();
+
+    setToys((currentToys) => {
+      return currentToys.map((toy) => {
+        return data;
+      })
+    })
+
+    if(!response.ok){throw new Error(`HTTP ERROR: ${response.status}`)};
+    
+  }
+
   return (
     <>
       <Header />
@@ -59,7 +82,7 @@ function App() {
       <div className="buttonContainer">
         <button onClick={handleClick}>Add a Toy</button>
       </div>
-      <ToyContainer toys={toys} onDonate={donateToy} />
+      <ToyContainer toys={toys} onDonate={donateToy} onLike={likeToy}/>
     </>
   );
 }
